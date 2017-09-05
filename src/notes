@@ -1,0 +1,91 @@
+	
+	Game loops are essential to optimizing game performance
+	
+	
+	//basic game loop
+
+while (true)
+{
+  processInput();
+  update();	//runs AI and physics
+  render();
+}
+
+ key job of a game loop: 
+ it runs the game at a consistent speed despite differences in the underlying hardware.
+ 
+ 
+ 												//equalizing game performance on different machines 
+ 	
+ 	//	1.using timer with fixed time step with no synchronization:
+ 	
+ 		//Game speed is directly affected by hardware and game complexity
+ 
+ while (true)
+{
+  double start = getCurrentTime();
+  processInput();
+  update();
+  render();
+
+  sleep(start + MS_PER_FRAME - getCurrentTime());		//time increment for waiting to restart loop
+}
+ 
+ 	//2.using real time or "variable or fluid time step" fixed time step with synchronization:
+ 	
+		//With a variable time step, you scale that velocity by the elapsed time.
+		//The game doesn’t play too fast, but it can play with lag.
+		//That bullet will get across the screen in the same amount of real time whether it’s twenty small fast steps or four big slow ones.  
+		//The game plays at a consistent rate on different hardware.
+		//Players with faster machines are rewarded with smoother gameplay.
+		//Machines that perform 50 calculation per second and those that make only 10 have a very different calculation rounding end because of that different gameplay.
+		
+ 
+ double lastTime = getCurrentTime();
+while (true)
+{
+  double current = getCurrentTime();
+  double elapsed = current - lastTime;
+  processInput();
+  update(elapsed);
+  render();
+  lastTime = current;
+}
+
+		
+		
+	//3.Loop with catch up loop - Fixed update time step, variable rendering:
+		//We can use this fact to our advantage. We’ll update the game using a fixed time step because that makes everything simpler and more stable for physics and AI. 
+		//But we’ll allow flexibility in when we render in order to free up some processor time.
+		//It adapts to playing both too slowly and too fast. As long as the game can update in real time, the game won’t fall behind.
+		//It’s more complex. The main downside is there is a bit more going on in the implementation.
+		
+
+double previous = getCurrentTime();
+double lag = 0.0;
+while (true)
+{
+  double current = getCurrentTime();
+  double elapsed = current - previous;
+  previous = current;
+  lag += elapsed;
+
+  processInput();
+
+  while (lag >= MS_PER_UPDATE)	// We’ll update the game using a fixed time step because that makes everything simpler and more stable for physics and AI. 
+  {
+    update();
+    lag -= MS_PER_UPDATE;
+  }
+
+  render();
+}
+
+
+
+
+		
+		
+		
+		
+		
