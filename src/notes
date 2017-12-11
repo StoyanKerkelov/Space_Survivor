@@ -58,7 +58,7 @@ while (true)
 		//We can use this fact to our advantage. We’ll update the game using a fixed time step because that makes everything simpler and more stable for physics and AI. 
 		//But we’ll allow flexibility in when we render in order to free up some processor time.
 		//It adapts to playing both too slowly and too fast. As long as the game can update in real time, the game won’t fall behind.
-		//It’s more complex. The main downside is there is a bit more going on in the implementation.
+		//It’s more complex. The main down-side is there is a bit more going on in the implementation.
 		
 
 double previous = getCurrentTime();
